@@ -191,7 +191,7 @@ Ensure to save and close.
 
 ## ✅ Done!
 
-ou’ve successfully automated the deployment of a full LAMP-based WordPress site using Vagrant! 🙌
+You’ve successfully automated the deployment of a full LAMP-based WordPress site using Vagrant! 🙌
 
 🛠️ **Skills Gained**
 
