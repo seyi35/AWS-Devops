@@ -8,7 +8,7 @@ In this project, we provision a WordPress site using **Vagrant** and **Ubuntu (f
 ## ⚙️ Prerequisites  
 - [Vagrant](https://www.vagrantup.com/downloads)  
 - [VirtualBox](https://www.virtualbox.org/wiki/Downloads)  
-- Basic knowledge of Linux terminal
+- Basic knowledge of Linux terminal (GIT)
 
 ---
 
@@ -22,7 +22,7 @@ cd wordpress
 vagrant init ubuntu/focal64
 ```
 
-Now at this point a vagrant file has been created ,lets tweak your `Vagrantfile`. First run `cat Vagrantfile`  and edit your script like so:
+Now at this point a vagrant file has been created ,lets tweak your `Vagrantfile`. First run `vim  Vagrantfile`  and edit your script like so:
 
 ```ruby
 Vagrant.configure("2") do |config|
