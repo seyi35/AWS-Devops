@@ -234,7 +234,7 @@ Architecture on AWS:
             Target Group: vprofile-elb-tg
 
 ### 9. **Application Verification**  
-   - Accessed application via Application Load Balancer endpoint(public URL).
+   - Accessed application via Elastic Load Balancer endpoint(public URL).
      
        <img width="1543" height="896" alt="Login page" src="https://github.com/user-attachments/assets/12228c0d-1024-4195-9fbc-9f55d1240018" />
        <img width="1817" height="836" alt="Login page 2" src="https://github.com/user-attachments/assets/131971cd-92aa-4797-9991-fa60ed3eca51" />
@@ -299,5 +299,6 @@ Architecture on AWS:
 │   ├── screenshots/
 │   ├── architecture-diagram.png
 ├── README.md
+
 
 
