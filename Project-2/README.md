@@ -42,22 +42,25 @@ Architecture on AWS:
      <img width="1841" height="637" alt="Backend SG" src="https://github.com/user-attachments/assets/b2b0a410-888e-4bef-bbd7-8ec0b1869bb3" />
 
 
-3. **Provision EC2 Instances (Backend + Application)**  
-   - DB Instance:
-     - Create DB instance with below details. 
+3. **Provision Backend & Application EC2 Instances with UserData**  
+   DB Instance:
+   - Create DB instance with below details. 
       
-<pre>   
-         Name: vprofile-db01
-         Project: vprofile
-         AMI: Amazon linux 2023
-         InstanceType: t2.micro
-         SecGrp: vprofile-backend-SG
-         UserData: mysql.sh
-</pre>
-- Once instance is ready, SSH into the server and check if userdata script is executed also, check status of mariadb.
+               Name: vprofile-db01
+               Project: vprofile
+               AMI: Amazon linux 2023
+               InstanceType: t2.micro
+               SecGrp: vprofile-backend-SG
+               UserData: mysql.sh
+   - Once instance is ready, SSH into the server and check if userdata script is executed also, check status of mariadb.
+     
+                 ssh -i vprofile-prod-key.pem ubuntu@<public_ip_of_instance>
+                 sudo su 
+                 systemctl status mariadb
+     
      <img width="898" height="265" alt="Mariadb service running" src="https://github.com/user-attachments/assets/d095e167-7e9c-4332-b069-53731e112f10" />
 
-- Lets also check the database.
+   - Lets also check the Database. `mysql -u admin -p accounts` 
   
      <img width="752" height="530" alt="database " src="https://github.com/user-attachments/assets/9f210be5-69fb-49c1-a876-ff857c832e9b" />
 
@@ -139,3 +142,4 @@ To make this guide practical and repeatable:
 │   ├── screenshots/
 │   ├── architecture-diagram.png
 ├── README.md
+
