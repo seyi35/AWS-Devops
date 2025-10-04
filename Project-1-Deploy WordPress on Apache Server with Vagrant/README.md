@@ -1,4 +1,4 @@
-# 🛠️ DevOps Project 1: Deploying a WordPress on Apache Server with Vagrant (LAMP Stack)
+# 🛠️ DevOps Project 1: Deploying WordPress site on Apache Server with Vagrant (LAMP Stack)
 
 ## 🔍 Overview  
 In this project, we provision a WordPress site using **Vagrant** and **Ubuntu (focal64)**. The environment is powered by the **LAMP stack** (Linux, Apache, MySQL, PHP).
@@ -91,7 +91,7 @@ We’re staging WordPress in `/srv/www` so it’s ready for Apache to serve.
 
 ### 🌐 Step 4: Configure Apache for WordPress
 
-Set up a virtual host for WordPress so it’s properly served from Apache. First open the Apache conf file in vim. 
+Set up a virtual host for WordPress so it’s properly served from Apache. First, open the Apache conf file in vim. 
 
 ```bash
 vim /etc/apache2/sites-available/wordpress.conf
@@ -180,13 +180,15 @@ Ensure to save and close.
 
 ### Step 7: Final Setup via Browser
 
-1. To set up on the browser we need to get the Ip Address by running `ip addr show`
+1. To set up on the browser, we need to get the IP Address by running `ip addr show`
 
-2. We will be using the public Ip to access it on the web. Complete the WordPress installer:  
+2. We will be using the public IP to access it on the web. Complete the WordPress installer:  
  - Choose a site title  
  - Create an admin username and password  
  - Enter your email  
  - And click Install! 🎉
+
+
 ---
 
 ## ✅ Done!
@@ -204,4 +206,4 @@ You’ve successfully automated the deployment of a full LAMP-based WordPress si
 -  Local Environment: Learned how to build and manage local dev setups.
 
 
-so yeah keep experimenting, break things, and build again - that’s the DevOps way 💥
+So yeah, keep experimenting, break things, and build again - that’s the DevOps way 💥
