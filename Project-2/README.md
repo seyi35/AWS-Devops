@@ -185,7 +185,7 @@ Architecture on AWS:
          Policy: s3FullAccess
 
    - Before we log in to our server, we need to ensure that SSH access on port 22 has been added to our vprofile-app-SG.
-   - Then connect to app011 Ubuntu server.
+   - Then connect to the app01 Ubuntu server.
 
          ssh -i "vprofile-prod-key.pem" ubuntu@<public_ip_of_server>
          sudo su -
@@ -299,6 +299,7 @@ Architecture on AWS:
 │   ├── screenshots/
 │   ├── architecture-diagram.png
 ├── README.md
+
 
 
 
