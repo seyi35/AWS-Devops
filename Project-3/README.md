@@ -4,7 +4,7 @@
 
 ## Project Overview
 
-This project demonstrates a complete CI/CD pipeline using Jenkins to automate the build, test, code quality analysis, and artifact publishing of a Java web application. It reflects a real-world DevOps workflow where every code change is automatically validated, analysed for quality, and stored as a versioned artifact — with the team notified via Slack at every stage.
+This project demonstrates a complete CI/CD pipeline using Jenkins to automate the build, test, code quality analysis, and artifact publishing of a Java web application. It reflects a real-world DevOps workflow where every code change is automatically validated, analysed for quality, and stored as a versioned artifact - with the team notified via Slack at every stage.
 
 > **Note:** The pipeline currently covers the CI portion of the workflow (source → build → test → quality gate → artifact storage). Docker, AWS ECR, and ECS deployment stages are planned for a future phase.
 
@@ -21,9 +21,11 @@ Install Plugins → Integrate Nexus & SonarQube → Write Pipeline → Set Notif
 
 ## Architecture Diagram
 
-> *Figure 1: CI/CD Pipeline Architecture — GitHub → Jenkins → SonarQube → Nexus → Slack*
+> *Figure 1: CI/CD Pipeline Architecture - GitHub → Jenkins → SonarQube → Nexus → Slack*
 
-*(Insert architecture diagram here)*
+<img width="685" height="516" alt="Arch diagram 1" src="https://github.com/user-attachments/assets/22a7f995-401b-4cc9-81b7-5297298a1b2e" />
+
+
 
 ---
 
@@ -63,7 +65,7 @@ Before launching any EC2 instances, create an SSH key pair in the AWS Console un
 
 Create the following three security groups before launching any instances.
 
-#### Jenkins Security Group — `jenkins-SG`
+#### Jenkins Security Group - `jenkins-SG`
 
 | Type | Protocol | Port | Source |
 |---|---|---|---|
@@ -72,14 +74,14 @@ Create the following three security groups before launching any instances.
 
 > Port 8080 must be open to all IPs because GitHub webhook IPs are not static. In production, consider restricting to [GitHub's published IP ranges](https://api.github.com/meta).
 
-#### Nexus Security Group — `nexus-SG`
+#### Nexus Security Group - `nexus-SG`
 
 | Type | Protocol | Port | Source |
 |---|---|---|---|
 | SSH | TCP | 22 | My IP |
 | Custom TCP | TCP | 8081 | My IP, `jenkins-SG` |
 
-#### SonarQube Security Group — `sonar-SG`
+#### SonarQube Security Group - `sonar-SG`
 
 | Type | Protocol | Port | Source |
 |---|---|---|---|
@@ -183,6 +185,7 @@ Create the following three security groups before launching any instances.
 4. Sign in with username `admin` and the password above. Set a new password and select **Disable Anonymous Access**.
 
 5. Create the following repositories via the **gear icon → Repositories → Create repository**:
+<img width="928" height="378" alt="Sonar_repo_creation" src="https://github.com/user-attachments/assets/5a0ba18a-61ef-4579-8a09-7b39f008dd3f" />
 
    **Hosted Repository** (stores your release artifacts):
    - Format: `maven2 (hosted)`
@@ -213,8 +216,10 @@ Create the following three security groups before launching any instances.
 
 2. **Generate an authentication token** for Jenkins integration:
    - Click your profile icon (top right) → **My Account** → **Security**
-   - Enter a token name (e.g., `jenkins-token`) and click **Generate**
-   - Copy and store the token immediately — it will not be displayed again
+   - Enter a token name (e.g., `Jenkins`) and click **Generate**
+   - Copy and store the token immediately - it will not be displayed again
+     <img width="1302" height="441" alt="Sonar token 2" src="https://github.com/user-attachments/assets/fe0b7a45-f154-4ab5-90ff-a28e417729db" />
+
 
 3. **Create a Quality Gate** to define the code standards your project must meet:
    - Go to **Quality Gates → Create**. Give it a name (e.g., `vprofile-QG`)
@@ -222,13 +227,17 @@ Create the following three security groups before launching any instances.
    - Click **Save**
    - Navigate to your project → **Project Settings → Quality Gate** → select the gate you just created
 
-   > Quality Gates define the minimum standards a project must meet to be considered releasable. If the pipeline produces code that exceeds the configured thresholds — for example, too many bugs or insufficient test coverage — the quality gate will fail and the Jenkins pipeline will be aborted automatically.
+   > Quality Gates define the minimum standards a project must meet to be considered releasable. If the pipeline produces code that exceeds the configured thresholds - for example, too many bugs or insufficient test coverage - the quality gate will fail and the Jenkins pipeline will be aborted automatically.
 
 4. **Create a Webhook** so SonarQube can send analysis results back to Jenkins:
    - Go to **Administration → Configuration → Webhooks → Create**
-   - Name: `jenkins`
+   - Name: `jenkins-ci-webhook`
    - URL: `http://<jenkins_private_ip>:8080/sonarqube-webhook/`
    - Click **Create**
+  
+<img width="516" height="317" alt="Quality gates 3" src="https://github.com/user-attachments/assets/fb75c9a9-51eb-4b11-884f-7c12619bd798" />
+
+     
 
    > Without this webhook, Jenkins would not know when the SonarQube analysis has finished or whether it passed the quality gate.
 
@@ -239,15 +248,22 @@ Create the following three security groups before launching any instances.
    - Name: `sonar6.2`
    - Enable **Install automatically**
 
+<img width="846" height="690" alt="Sonarqube scanner tool " src="https://github.com/user-attachments/assets/88826101-c6f3-442c-b830-165be566e798" />
+
+
    Add the SonarQube server:
    - Go to **Manage Jenkins → Configure System → SonarQube Servers → Add SonarQube**
    - Name: `sonarserver`
    - Server URL: `http://<sonar_private_ip>` *(use the private IP)*
-   - Under **Server Authentication Token**, click **Add → Jenkins**
-   - Kind: Secret Text
+   - Under **Server Authentication Token**, click **Add → Add Secret text**
+   - Scope: Global (jenkins,nodes etc..)
    - Secret: paste the token generated in step 2
    - ID: `sonartoken`
-   - Select `sonartoken` from the dropdown and click **Save**
+   - Description: `sonartoken`
+   - click **Create**
+<img width="665" height="635" alt="integrating the sonar key2" src="https://github.com/user-attachments/assets/894ffd26-5932-4499-b046-5a4f65ffe8b8" />
+
+
 
    > Confirm that the `sonar-SG` security group allows inbound traffic on port 80 from `jenkins-SG`. Without this rule, Jenkins will be unable to upload analysis results to SonarQube.
 
@@ -259,7 +275,7 @@ Create the following three security groups before launching any instances.
 
 ---
 
-### Stage 1 — Fetch
+### Stage 1 - Fetch
 
 The `tools` block at the top of the pipeline ensures that Maven 3.9 and JDK 17 are available in the build environment before any stage runs. This stage then checks out the source code from the specified GitHub repository and branch into the Jenkins workspace.
 
@@ -283,7 +299,7 @@ pipeline {
 
 ---
 
-### Stage 2 — Build and Archive Artifact
+### Stage 2 - Build and Archive Artifact
 
 Maven compiles the project and packages it as a `.war` file. Unit tests are intentionally skipped at this stage since they run as a dedicated step in Stage 3. If the build succeeds, the artifact is archived in Jenkins for traceability and fingerprinting. If the build fails, the pipeline logs the failure and stops.
 
@@ -307,7 +323,7 @@ Maven compiles the project and packages it as a `.war` file. Unit tests are inte
 
 ---
 
-### Stage 3 — Unit Tests & Checkstyle Analysis
+### Stage 3 - Unit Tests & Checkstyle Analysis
 
 The **Unit Test** stage runs all JUnit tests using `mvn test` and generates test result reports under `target/surefire-reports`. These reports confirm that the application logic behaves as expected.
 
@@ -331,7 +347,7 @@ The **Checkstyle** stage performs static analysis to verify that the code confor
 
 ---
 
-### Stage 4 — SonarQube Code Analysis
+### Stage 4 - SonarQube Code Analysis
 
 This stage runs a comprehensive static code analysis using the SonarQube Scanner. It uploads the source code, compiled binaries, unit test results, code coverage data (JaCoCo), and Checkstyle results to the SonarQube server. The `withSonarQubeEnv` block automatically injects the server URL and authentication token configured in Jenkins, so no credentials are hardcoded in the pipeline.
 
@@ -361,14 +377,14 @@ This stage runs a comprehensive static code analysis using the SonarQube Scanner
 
 ---
 
-### Stage 5 — Quality Gate
+### Stage 5 - Quality Gate
 
-Jenkins pauses and waits for SonarQube to complete its analysis and return a pass/fail result via the configured webhook. If the quality gate fails — meaning the code does not meet the defined thresholds for bugs, vulnerabilities, or coverage — the pipeline is aborted. The one-hour timeout prevents the build from hanging indefinitely in the event of a connectivity issue.
+Jenkins pauses and waits for SonarQube to complete its analysis and return a pass/fail result via the configured webhook. If the quality gate fails - meaning the code does not meet the defined thresholds for bugs, vulnerabilities, or coverage - the pipeline is aborted. The 30-Minute timeout prevents the build from hanging indefinitely in the event of a connectivity issue.
 
 ```groovy
         stage('Quality Gate') {
             steps {
-                timeout(time: 1, unit: 'HOURS') {
+                timeout(time: 30, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
             }
@@ -377,7 +393,7 @@ Jenkins pauses and waits for SonarQube to complete its analysis and return a pas
 
 ---
 
-### Stage 6 — Upload Artifact to Nexus
+### Stage 6 - Upload Artifact to Nexus
 
 This stage uploads the packaged `.war` artifact to the Nexus hosted repository (`vprofile-repo`). Each artifact is versioned using the Jenkins build ID combined with a timestamp, ensuring every build produces a unique, traceable artifact and preventing version conflicts in the repository. The `nexuslogin` credential ID must be configured in Jenkins credentials beforehand (see [Nexus Setup](#nexus) above).
 
@@ -458,7 +474,7 @@ post {
 }
 ```
 
-> Using `always` with a dynamic color map sends a single, consistent notification for every build outcome — whether it passes, fails, or is aborted.
+> Using `always` with a dynamic color map sends a single, consistent notification for every build outcome - whether it passes, fails, or is aborted.
 
 ---
 
@@ -473,6 +489,11 @@ post {
 > Using **Pipeline script from SCM** is strongly recommended over pasting the script directly into Jenkins. It keeps your pipeline version-controlled alongside your application code, making changes auditable and rollback straightforward.
 
 ---
+
+<img width="1862" height="650" alt="EXCEUTION 2" src="https://github.com/user-attachments/assets/0e618274-b86a-4f1c-9448-4498ac604eec" />
+<img width="1202" height="262" alt="EXCEUTION 3" src="https://github.com/user-attachments/assets/4a74137b-9a60-4e2a-a6fa-d0560fd4b862" />
+
+
 
 ## Repository Structure
 
