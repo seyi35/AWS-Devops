@@ -1,10 +1,10 @@
-# CI/CD Pipeline with Jenkins, Nexus, SonarQube & AWS
+# CI with Jenkins, Nexus, SonarQube & AWS
 
 ---
 
 ## Project Overview
 
-This project demonstrates a complete CI/CD pipeline using Jenkins to automate the build, test, code quality analysis, and artifact publishing of a Java web application. It reflects a real-world DevOps workflow where every code change is automatically validated, analysed for quality, and stored as a versioned artifact - with the team notified via Slack at every stage.
+This project demonstrates Continuous Integration with  Jenkins to automate the build, test, code quality analysis, and artifact publishing of a Java web application. It reflects a real-world DevOps workflow where every code change is automatically validated, analysed for quality, and stored as a versioned artifact - with the team notified via Slack at every stage.
 
 > **Note:** The pipeline currently covers the CI portion of the workflow (source → build → test → quality gate → artifact storage). Docker, AWS ECR, and ECS deployment stages are planned for a future phase.
 
@@ -21,7 +21,7 @@ Install Plugins → Integrate Nexus & SonarQube → Write Pipeline → Set Notif
 
 ## Architecture Diagram
 
-> *Figure 1: CI/CD Pipeline Architecture - GitHub → Jenkins → SonarQube → Nexus → Slack*
+> *Figure 1: Continuous Architecture - GitHub → Jenkins → SonarQube → Nexus → Slack*
 
 <img width="685" height="516" alt="Arch diagram 1" src="https://github.com/user-attachments/assets/22a7f995-401b-4cc9-81b7-5297298a1b2e" />
 
@@ -504,8 +504,6 @@ post {
 │   ├── jenkins-userdata.sh
 │   ├── nexus-userdata.sh
 │   └── sonar-userdata.sh
-├── src/
-│   └── (application source code)
 └── README.md
 ```
 
