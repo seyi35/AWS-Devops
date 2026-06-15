@@ -63,7 +63,7 @@ Before launching any EC2 instances, create an SSH key pair in the AWS Console un
 
 ### Security Groups
 
-Create the following three security groups before launching any instances.
+Create the following three security groups(SG) before launching any instances.
 
 #### Jenkins Security Group - `jenkins-SG`
 
